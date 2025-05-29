@@ -6,6 +6,7 @@ static mt19937 rng(random_device{}());
 static double randomPriority()
 {
     uniform_real_distribution<double> dist(0.0, 1.0);
+    return dist(rng);
 }
 
 TreapNode::TreapNode(int k) : key(k), priority(randomPriority()),
@@ -76,10 +77,46 @@ TreapNode *Treap::insert(TreapNode *t, int key)
 TreapNode *Treap::del(TreapNode *t, int key)
 {
     if (!t)
-        return t;
+        return nullptr;
 
     if (key < t->key)
-        del(t->left, key);
+    {
+        t->left = del(t->left, key);
+        return t;
+    }
     else if (key > t->key)
-        del(t->right, key);
+    {
+        t->right = del(t->right, key);
+        return t;
+    }
+
+    // we got this key
+    if (t->left == nullptr && t->right == nullptr)
+    {
+        delete t;
+        return nullptr;
+    }
+    else if (t->left == nullptr)
+    {
+        TreapNode *temp = t->right;
+        delete t;
+        t = temp;
+    }
+    else if (t->right == nullptr)
+    {
+        TreapNode *temp = t->left;
+        delete t;
+        t = temp;
+    }
+    else if (t->left->priority < t->right->priority)
+    {
+        rotateLeft(t);
+        t->left = del(t->left, key);
+    }
+    else
+    {
+        rotateRight(t);
+        t->right = del(t->right, key);
+    }
+    return t;
 }
