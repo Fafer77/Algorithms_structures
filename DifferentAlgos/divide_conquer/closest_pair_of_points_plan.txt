@@ -1,0 +1,27 @@
+Goal: find the closest pair of points (euclidean measure)
+
+Real life applications:
+-> collision detection in air traffic control
+
+If there is only one point -> there is no pair
+If n = 2 -> it is just this pair
+If n = 3 -> just look at all pairs and choose closest one
+
+How to divide problems?
+
+1. Sort points by x
+Every time we divide array from middle based on x until we get into base case and we return sth
+To combine results from 2 parts we choose smaller one min(k1, k2), but we have to include pairs
+between parts as well
+
+If there is pair which distance is shorter than D then both points from pair must be within D from middle line,
+so all points outside we can kick.
+
+
+2. Sort points based on y
+There we can narrow down to rectangle 2D x D
+The limit of points in this rectangle is 8, so for each points in this rectangle
+we have to consider 7 adjacent points
+
+Algorithm:
+1. Write mergesort and use it to sort points based on x.
